@@ -1,12 +1,19 @@
 #include <stdio.h>
+#include <stdlib.h>
+
+#include <editline/readline.h>
+#include <editline/history.h>
 
 int main(int argc, char** argv) {
-    char firstName[30];
-    printf("Enter your first name: \n");
+    puts("Lispy version 0.0.1\n");
+    puts("Press Ctrl+c to Exit\n");
 
-    scanf("%s", firstName);
-
-    printf("Hello %s \n", firstName);
+    while(1) {
+        char* input = readline("lipsy> ");
+        add_history(input);
+        printf("No you're a %s\n", input);
+        free(input);
+    }
 
     return 0;
 }
