@@ -1,12 +1,12 @@
 CC = gcc
-CFLAGS = -Wall -g
-LDFLAGS = -ledit
+CFLAGS = -Wall -std=c99
+LDFLAGS = -ledit -lm
 
-TARGET = lisp.out
-SOURCES = lisp.c
+TARGET = parsing.out
+SOURCES = parsing.c mpc.c
 
 $(TARGET): $(SOURCES)
-	$(CC) $(CFLAGS) -o $(TARGET) $(SOURCES) $(LDFLAGS)
+	$(CC) $(CFLAGS) $(SOURCES) $(LDFLAGS) -o $(TARGET) 
 
 clean:
 	rm -f $(TARGET)
