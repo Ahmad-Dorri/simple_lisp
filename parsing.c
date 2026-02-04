@@ -26,6 +26,42 @@ void add_history(char *unused) {}
 #include <editline/readline.h>
 #endif
 
+int total_numbers(mpc_ast_t *t) {
+  if (t->children_num == 0) {
+    if (strstr(t->tag, "number")) {
+      return 1;
+    }
+    return 0;
+  }
+
+  if (t->children_num >= 1) {
+    int total = 0;
+    for (int i = 0; i < t->children_num; i++) {
+      total += total_numbers(t->children[i]);
+    }
+
+    return total;
+  }
+
+  return 0;
+}
+
+int total_branches(mpc_ast_t *t) {
+  if (t->children_num == 0) {
+    return 0;
+  }
+
+  if (t->children_num >= 1) {
+    int total = 1;
+    for (int i = 0; i < t->children_num; i++) {
+      total += total_branches(t->children[i]);
+    }
+    return total;
+  }
+
+  return 0;
+}
+
 int number_of_nodes(mpc_ast_t *t) {
   if (t->children_num == 0) {
     return 1;
@@ -98,8 +134,11 @@ int main(int argc, char **argv) {
     add_history(input);
     mpc_result_t r;
     if (mpc_parse("<stdin>", input, Lispy, &r)) {
+      mpc_ast_print(r.output);
       long result = eval(r.output);
       printf("%li\n", result);
+      int tb = total_branches(r.output);
+      printf("%d\n", tb);
       mpc_ast_delete(r.output);
     } else {
       mpc_err_print(r.error);
