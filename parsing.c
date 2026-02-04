@@ -46,22 +46,6 @@ int total_numbers(mpc_ast_t *t) {
   return 0;
 }
 
-int total_branches(mpc_ast_t *t) {
-  if (t->children_num == 0) {
-    return 0;
-  }
-
-  if (t->children_num >= 1) {
-    int total = 1;
-    for (int i = 0; i < t->children_num; i++) {
-      total += total_branches(t->children[i]);
-    }
-    return total;
-  }
-
-  return 0;
-}
-
 int number_of_nodes(mpc_ast_t *t) {
   if (t->children_num == 0) {
     return 1;
@@ -88,6 +72,9 @@ long eval_op(long x, char *op, long y) {
   }
   if (strcmp(op, "*") == 0) {
     return x * y;
+  }
+  if (strcmp(op, "%") == 0) {
+    return x % y;
   }
   return 0;
 }
@@ -120,7 +107,7 @@ int main(int argc, char **argv) {
   mpca_lang(MPCA_LANG_DEFAULT,
             "                                                     \
         number   : /-?[0-9]+/ ;                             \
-        operator : '+' | '-' | '*' | '/' ;                  \
+        operator : '+' | '-' | '*' | '/' | '%' ;                  \
         expr     : <number> | '(' <operator> <expr>+ ')' ;  \
         lispy    : /^/ <operator> <expr>+ /$/ ;             \
       ",
@@ -134,11 +121,8 @@ int main(int argc, char **argv) {
     add_history(input);
     mpc_result_t r;
     if (mpc_parse("<stdin>", input, Lispy, &r)) {
-      mpc_ast_print(r.output);
       long result = eval(r.output);
       printf("%li\n", result);
-      int tb = total_branches(r.output);
-      printf("%d\n", tb);
       mpc_ast_delete(r.output);
     } else {
       mpc_err_print(r.error);
