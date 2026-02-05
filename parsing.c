@@ -66,13 +66,7 @@ long eval_op(long x, char *op, long y) {
     return x + y;
   }
   if (strcmp(op, "-") == 0) {
-    if (y) {
-      printf("%ld hehe", y);
-      return x - y;
-    } else {
-      printf("%ld haha", y);
-      return -x;
-    }
+    return x - y;
   }
   if (strcmp(op, "/") == 0) {
     return x / y;
